@@ -2,16 +2,18 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const noteRoutes = require('./routes/note.routes');
 
 dotenv.config();
-
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('Welcome to the Notes API');
-})
+// Middleware
+app.use(express.json());
+app.use(cors());
+
+// Routes
+app.use('/api', noteRoutes);
+
 
 const PORT = process.env.PORT || 3500;
 
