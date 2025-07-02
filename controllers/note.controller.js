@@ -1,4 +1,3 @@
-const { title } = require('process');
 const Note = require('./../models/Note');
 
 exports.createNote = async (req, res) => {
@@ -48,3 +47,28 @@ exports.getNote = async ( req, res) => {
     }
 
 };
+
+exports.updateNote = async (req, res) => {
+    const { id } = req.params;
+    const { title, content } = req.body;
+
+    try{
+        const updateNote = await Note.findByIdAndUpdate(id, { title, content }, { new: true });
+
+        if (!updateNote) {
+            return res.status(404).json({
+                message: 'Note not found'
+            });
+        }
+        res.status(200).json({
+            message: 'Note updated successfully',
+            note: updateNote
+        });
+    }
+    catch (err) {
+        res.status(500).json({
+            message: 'Error updating note',
+            error: err.message
+        })
+    }
+}

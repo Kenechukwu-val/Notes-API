@@ -9,6 +9,9 @@ router.post('/notes', noteController.createNote);
 //Get a note by ID
 router.get('/notes', noteController.getNote);
 
+//Update a note by ID
+router.put('/notes/:id', noteController.updateNote);
+
 
 
 module.exports = router;
