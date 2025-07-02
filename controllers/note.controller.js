@@ -5,9 +5,15 @@ exports.createNote = async (req, res) => {
     const { title, content } = req.body;
     const userID = '64f42fbe14e2d1c62b76e999'; // Assuming user ID is stored in req.user after authentication
 
+    if (!title || !content) {
+        return res.status(400).json({
+            message: 'Title and content are required'
+        });
+    }
+
     try{
         const newNote = await Note.create({
-            user: userID,
+            user: req.user?.id || userID,
             title,
             content
         });
