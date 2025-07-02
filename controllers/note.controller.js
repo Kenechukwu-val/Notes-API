@@ -1,7 +1,7 @@
 const Note = require('./../models/Note');
 
 exports.createNote = async (req, res) => {
-    
+
     const { title, content } = req.body;
     const userID = '64f42fbe14e2d1c62b76e999'; // Assuming user ID is stored in req.user after authentication
 
@@ -22,4 +22,30 @@ exports.createNote = async (req, res) => {
             error: err.message
         });
     }
+};
+
+exports.getNote = async ( req, res) => {
+    const noteID = req.params.id;
+
+    try{
+        const note = await Note.findById(noteID);
+
+        if (!note) {
+            return res.status(404).json({
+                message: 'Note not found'
+            })
+        }
+        res.status(200).json({
+            message: 'Note fetched successfully',
+            note: note
+        })
+
+    }
+    catch (err) {
+        res.status(500).json({
+            message: 'Error fetching note',
+            error: err.message
+        })
+    }
+
 };
