@@ -1,3 +1,4 @@
+const { title } = require('process');
 const Note = require('./../models/Note');
 
 exports.createNote = async (req, res) => {
@@ -25,10 +26,8 @@ exports.createNote = async (req, res) => {
 };
 
 exports.getNote = async ( req, res) => {
-    const noteID = req.params.id;
-
     try{
-        const note = await Note.findById(noteID);
+        const note = await Note.find({});
 
         if (!note) {
             return res.status(404).json({
