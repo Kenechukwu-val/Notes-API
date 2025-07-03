@@ -34,7 +34,7 @@ exports.createNote = async (req, res) => {
 
 exports.getNote = async ( req, res) => {
     try{
-        const note = await Note.find({});
+        const note = await Note.find({user: req.user._id});
 
         if (!note) {
             return res.status(404).json({
@@ -68,6 +68,14 @@ exports.updateNote = async (req, res) => {
                 message: 'Note not found'
             });
         }
+        // Check if the user is authorized to update the note
+        if (updateNote.user.toString() !== req.user._id.toString()) {
+            return res.status(403).json({
+                message: 'You are not authorized to update this note'
+            });
+        }
+
+        // Return the updated note
         res.status(200).json({
             message: 'Note updated successfully',
             note: updateNote
@@ -86,12 +94,22 @@ exports.deleteNote = async (req, res) => {
 
     try {
         const deletedNote = await Note.findByIdAndDelete(id);
-
+        
+        // Check if the note exists
         if (!deletedNote) {
             return res.status(404).json({
                 message: 'Note not found'
             });
         }
+
+        // Check if the user is authorized to delete the note
+        if (deletedNote.user.toString() !== req.user._id.toString()) {
+            return res.status(403).json({
+                message: 'You are not authorized to delete this note'
+            });
+        }
+
+        // Return a success message
         res.status(200).json({
             message: 'Note deleted successfully',
             note: deletedNote

@@ -8,7 +8,7 @@ const protect = require('../middleware/user.middleware');
 router.post('/notes', protect, noteController.createNote);
 
 //Get a note by ID
-router.get('/notes', protect, noteController.getNote);
+router.get('/notes/:id', protect, noteController.getNote);
 
 //Update a note by ID
 router.put('/notes/:id', protect, noteController.updateNote);
