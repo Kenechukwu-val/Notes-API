@@ -13,7 +13,7 @@ exports.createNote = async (req, res) => {
 
     try{
         const newNote = await Note.create({
-            user: req.user?.id || userID,
+            user: req.user?._id || userID,
             title,
             content
         });
