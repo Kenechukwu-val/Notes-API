@@ -20,6 +20,12 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+// Method to compare password
+userSchema.methods.comparePassword = async function(password) {
+    return await bcrypt.compare(password, this.password);
+}
+
+// Pre-save hook to hash password
 userSchema.pre('save', async function(next) {
     if (!this.isModified('password')) return next();
     try {
