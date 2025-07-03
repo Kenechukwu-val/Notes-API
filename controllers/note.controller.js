@@ -3,8 +3,9 @@ const Note = require('./../models/Note');
 exports.createNote = async (req, res) => {
 
     const { title, content } = req.body;
-    const userID = '64f42fbe14e2d1c62b76e999'; // Assuming user ID is stored in req.user after authentication
 
+    // Validate the input
+    // Ensure that title and content are provided
     if (!title || !content) {
         return res.status(400).json({
             message: 'Title and content are required'
@@ -12,8 +13,9 @@ exports.createNote = async (req, res) => {
     }
 
     try{
+        // Create a new note
         const newNote = await Note.create({
-            user: req.user?._id || userID,
+            user: req.user._id, // Assuming req.user is set by the protect middleware
             title,
             content
         });
