@@ -1,60 +1,32 @@
 const Note = require('./../models/Note');
+const asyncHandler = require('express-async-handler');
 
-exports.createNote = async (req, res) => {
+exports.createNote = asyncHandler(async (req, res) => {
 
     const { title, content } = req.body;
 
     // Validate the input
     // Ensure that title and content are provided
     if (!title || !content) {
-        return res.status(400).json({
-            message: 'Title and content are required'
-        });
+        res.status(400);
+        throw new Error('Title and Content required')
     }
 
-    try{
-        // Create a new note
-        const newNote = await Note.create({
-            user: req.user._id, // Assuming req.user is set by the protect middleware
-            title,
-            content
-        });
-        res.status(201).json({
-            message: 'Note created successfully',
-            note: newNote
-        })
-    }
-    catch (err) {
-        res.status(500).json({
-            message: 'Error creating note',
-            error: err.message
-        });
-    }
-};
+    // Create a new note
+    const newNote = await Note.create({
+        user: req.user._id, // Assuming req.user is set by the protect middleware
+        title,
+        content
+    });
 
-exports.getNote = async ( req, res) => {
-    try{
-        const note = await Note.find({user: req.user._id});
+    res.status(201).json(newNote);
+        
+});
 
-        if (!note) {
-            return res.status(404).json({
-                message: 'Note not found'
-            })
-        }
-        res.status(200).json({
-            message: 'Note fetched successfully',
-            note: note
-        })
-
-    }
-    catch (err) {
-        res.status(500).json({
-            message: 'Error fetching note',
-            error: err.message
-        })
-    }
-
-};
+exports.getNote = asyncHandler(async (req, res) => {
+    const notes = await Note.find({ user: req.user._id });
+    res.status(200).json(notes);
+});
 
 exports.updateNote = async (req, res) => {
     const { id } = req.params;
