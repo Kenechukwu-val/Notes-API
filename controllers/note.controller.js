@@ -28,68 +28,44 @@ exports.getNote = asyncHandler(async (req, res) => {
     res.status(200).json(notes);
 });
 
-exports.updateNote = async (req, res) => {
+exports.updateNote = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { title, content } = req.body;
 
-    try{
-        const updateNote = await Note.findByIdAndUpdate(id, { title, content }, { new: true });
+    const updateNote = await Note.findByIdAndUpdate(id, { title, content }, { new: true });
 
-        if (!updateNote) {
-            return res.status(404).json({
-                message: 'Note not found'
-            });
-        }
-        // Check if the user is authorized to update the note
-        if (updateNote.user.toString() !== req.user._id.toString()) {
-            return res.status(403).json({
-                message: 'You are not authorized to update this note'
-            });
-        }
-
-        // Return the updated note
-        res.status(200).json({
-            message: 'Note updated successfully',
-            note: updateNote
-        });
+    if (!updateNote) {
+        res.status(400);
+        throw new Error('Note not found')
     }
-    catch (err) {
-        res.status(500).json({
-            message: 'Error updating note',
-            error: err.message
-        })
+    // Check if the user is authorized to update the note
+    if (updateNote.user.toString() !== req.user._id.toString()) {
+        throw new Error('You are not authorized to update this note')
     }
-}
 
-exports.deleteNote = async (req, res) => {
+    // Return the updated note
+    res.status(201).json(updateNote);
+
+        
+});
+
+exports.deleteNote = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    try {
-        const deletedNote = await Note.findByIdAndDelete(id);
-        
-        // Check if the note exists
-        if (!deletedNote) {
-            return res.status(404).json({
-                message: 'Note not found'
-            });
-        }
+    const deletedNote = await Note.findByIdAndDelete(id);
 
-        // Check if the user is authorized to delete the note
-        if (deletedNote.user.toString() !== req.user._id.toString()) {
-            return res.status(403).json({
-                message: 'You are not authorized to delete this note'
-            });
-        }
-
-        // Return a success message
-        res.status(200).json({
-            message: 'Note deleted successfully',
-            note: deletedNote
-        });
-    } catch (err) {
-        res.status(500).json({
-            message: 'Error deleting note',
-            error: err.message
-        });
+    // Check if the note exists
+    if (!deletedNote) {
+        res.status(404);
+        throw new Error('Note not found');
     }
-};
+
+    // Check if the user is authorized to delete the note
+    if (deletedNote.user.toString() !== req.user._id.toString()) {
+        res.status(403);
+        throw new Error('You are not authorized to delete this note')
+    }
+
+    // Return a success message
+    res.status(201).json(deletedNote);
+});
