@@ -27,7 +27,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // API routes
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.send('Welcome to the Notes API');
 });
 app.use('/api', noteRoutes);
