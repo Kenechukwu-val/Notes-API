@@ -31,5 +31,5 @@ A secure, user-authenticated REST API for managing personal notes.
 - Render (deployment)
 
 ## 🧑 Author
-[Kenechukwu Val](https://www.linkedin.com/in/your-profile)
+[Kenechukwu Valentine](https://www.linkedin.com/in/kenechukwu-nwafor-361533163/)
 
