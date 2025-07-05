@@ -1,32 +1,43 @@
+// Load environment variables early
+const dotenv = require('dotenv');
+dotenv.config();
+
+// Core modules
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const cors = require('cors');
-const morgan = require('morgan')
+const morgan = require('morgan');
+
+// Route handlers
 const noteRoutes = require('./routes/note.routes');
 const userRoutes = require('./routes/user.routes');
-const { errorHandler, notFound } = require('./middleware/errorHandler.middleware')
-
-dotenv.config();
-const app = express();
 
 // Middleware
+const { errorHandler, notFound } = require('./middleware/errorHandler.middleware');
+
+const app = express();
+
+// Middleware setup
 app.use(express.json());
 app.use(cors());
 
-// Routes
-app.use('/api', noteRoutes);
-app.use('/api', userRoutes);
-
-app.use(notFound);
-app.use(errorHandler);
-
-
+// Logging (only in development)
 if (process.env.NODE_ENV !== 'production') {
     app.use(morgan('dev'));
 }
 
+// API routes
+app.get('/', (req, res) => {
+    res.send('Welcome to the Notes API');
+});
+app.use('/api', noteRoutes);
+app.use('/api', userRoutes);
 
+// Error handling middleware
+app.use(notFound);
+app.use(errorHandler);
+
+// Database connection and server start
 const PORT = process.env.PORT || 3500;
 
 mongoose.connect(process.env.MONGO_URI)
