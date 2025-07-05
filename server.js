@@ -27,8 +27,8 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // API routes
-app.use('/api', noteRoutes);
-app.use('/api', userRoutes);
+app.use('/api/notes', noteRoutes);
+app.use('/api/users', userRoutes);
 
 // Health check route
 app.get('/', (req, res) => {
