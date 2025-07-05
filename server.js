@@ -30,6 +30,12 @@ if (process.env.NODE_ENV !== 'production') {
 app.use('/api', noteRoutes);
 app.use('/api', userRoutes);
 
+// Health check route
+app.get('/', (req, res) => {
+    res.json({ success: true, message: 'API is running' });
+});
+
+
 // Error handling middleware
 app.use(notFound);
 app.use(errorHandler);
